@@ -19,7 +19,7 @@ const PostsPage = () => {
                     setError('Unauthorized or no posts available');
                 }
             } catch (err) {
-                setError('Error fetching posts');
+                setError('You dont have access to see posts');
             }
         };
 
