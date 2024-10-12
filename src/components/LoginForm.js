@@ -54,7 +54,7 @@ const LoginForm = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value.replace(/[^0-9]/g, ''))} // Only keep numeric input
               placeholder="Password"
               required
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
