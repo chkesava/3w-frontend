@@ -7,7 +7,7 @@ import axios from 'axios';
 
 // Set Axios default settings for the base URL and credentials
 axios.defaults.baseURL = 'https://threew-backend.onrender.com/v1';
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
