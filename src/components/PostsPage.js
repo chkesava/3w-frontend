@@ -20,6 +20,7 @@ const PostsPage = () => {
                 });
 
                 if (response.data.status === 'success') {
+                    console.log(response.data.data);
                     setPosts(response.data.data);
                 } else {
                     setError('Unauthorized or no posts available');
@@ -43,18 +44,31 @@ const PostsPage = () => {
                     {posts.length > 0 ? (
                         posts.map(post => (
                             <div key={post._id} className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
-                                <img
-                                    src={post.image_url}
-                                    alt={post.name}
-                                    className="w-full h-48 object-cover rounded-t-lg transform transition duration-500 hover:scale-110"
-                                />
+                                <a
+                                    href={post.image_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >
+                                    <img
+                                        src={post.image_url}
+                                        alt={post.name}
+                                        className="w-full h-48 object-cover rounded-t-lg transform transition duration-500 hover:scale-110"
+                                    />
+                                </a>
+
                                 <div className="p-6">
                                     <p className="text-lg font-semibold text-gray-900 truncate hover:text-indigo-500 transition duration-300">
                                         {post.name}
                                     </p>
-                                    <p className="text-sm text-gray-500 mb-2 hover:text-indigo-400 transition duration-300">
-                                        {post.social_media_handle}
-                                    </p>
+                                    <a
+                                        href={post.social_media_handle.startsWith('http') ? post.social_media_handle : `https://www.${post.social_media_handle}`}
+                                        target="_blank" // Opens the link in a new tab
+                                        rel="noopener noreferrer" // For security and performance reasons
+                                        >
+                                        <p className="text-sm text-gray-500 mb-2 hover:text-indigo-400 transition duration-300">
+                                            {post.social_media_handle}
+                                        </p>
+                                    </a>
                                     <p className="text-xs text-gray-400">
                                         {new Date(post.createdAt).toLocaleDateString()}
                                     </p>
