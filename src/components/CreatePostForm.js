@@ -7,7 +7,7 @@ const CreatePostForm = () => {
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [isUploading, setIsUploading] = useState(false); // To track the upload status
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageUpload = async (file) => {
     const maxFileSize = 5 * 1024 * 1024; // 5 MB
@@ -23,12 +23,12 @@ const CreatePostForm = () => {
       return null;
     }
 
-    setIsUploading(true); // Set upload state to true
+    setIsUploading(true);
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'Kesava_preset'); // Replace with your Cloudinary upload preset
-    formData.append('cloud_name', 'dvzei06gf'); // Your Cloudinary Cloud Name
+    formData.append('upload_preset', 'Kesava_preset');
+    formData.append('cloud_name', 'dvzei06gf');
 
     try {
       const response = await axios.post('https://api.cloudinary.com/v1_1/dvzei06gf/image/upload', formData, {
@@ -37,51 +37,56 @@ const CreatePostForm = () => {
         },
       });
 
-      setIsUploading(false); // Reset upload state
-      return response.data.secure_url; // Return the image URL
+      setIsUploading(false);
+      return response.data.secure_url;
     } catch (err) {
       console.error('Image upload failed:', err);
       setError('Image upload failed');
-      setIsUploading(false); // Reset upload state
+      setIsUploading(false);
       return null;
     }
   };
 
+  const validateSocialMediaHandle = (handle) => {
+    const regex = /^https:\/\/(www\.)?(twitter|instagram|facebook|linkedin|x|tiktok)\.com\/[a-zA-Z0-9_]+$/;
+    return regex.test(handle);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
-    setSuccessMessage(null); // Clear previous success messages
+    setError(null);
+    setSuccessMessage(null);
 
-    // Check if the form fields are valid
     if (!name || !socialMediaHandle) {
       setError('Please fill in all the fields');
       return;
     }
 
-    // Upload image to Cloudinary first
+    if (!validateSocialMediaHandle(socialMediaHandle)) {
+      setError('Invalid social media handle. Please enter a valid URL like https://twitter.com/username');
+      return;
+    }
+
     let imageUrl = null;
     if (imageFile) {
       imageUrl = await handleImageUpload(imageFile);
-      if (!imageUrl) return; // Stop if image upload fails
+      if (!imageUrl) return;
     }
 
     try {
       const response = await axios.post('/posts/create', {
         name,
         social_media_handle: socialMediaHandle,
-        image_url: imageUrl, // Use the uploaded image URL
+        image_url: imageUrl,
       });
 
-      // Handle success
       setSuccessMessage('Post created successfully!');
       console.log('Post created:', response.data);
 
-      // Clear form inputs after successful submission
       setName('');
       setSocialMediaHandle('');
       setImageFile(null);
     } catch (err) {
-      // Handle error
       setError(err.response?.data?.message || 'Post creation failed');
     }
   };
@@ -91,7 +96,6 @@ const CreatePostForm = () => {
       <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">Create a New Post</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* Name Input */}
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
@@ -105,7 +109,6 @@ const CreatePostForm = () => {
           />
         </div>
 
-        {/* Social Media Handle Input */}
         <div className="mb-4">
           <label htmlFor="socialMediaHandle" className="block text-sm font-medium text-gray-700 mb-1">Social Media Handle</label>
           <input
@@ -119,7 +122,6 @@ const CreatePostForm = () => {
           />
         </div>
 
-        {/* Image Upload Input */}
         <div className="mb-4">
           <label htmlFor="imageFile" className="block text-sm font-medium text-gray-700 mb-1">Upload Image</label>
           <input
@@ -129,10 +131,9 @@ const CreatePostForm = () => {
             accept="image/*"
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          {isUploading && <p className="text-sm text-gray-500 mt-2">Uploading image...</p>}
+          {isUploading && <p className="text-sm text-gray-500 mt-2">Uploading image... (This may take up to 60 seconds)</p>}
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full p-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 ease-in-out"
@@ -141,7 +142,6 @@ const CreatePostForm = () => {
           Create Post
         </button>
 
-        {/* Error and Success Messages */}
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
         {successMessage && <p className="mt-4 text-green-500 text-center">{successMessage}</p>}
       </form>

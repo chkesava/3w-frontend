@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // For navigation
+import Cookies from 'js-cookie'; // Optional, to handle cookies easily
 
 const PostsPage = () => {
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
 
     useEffect(() => {
+        // Check for the presence of the SessionID cookie
+        const sessionId = Cookies.get('SessionID');
+        console.log(sessionId); // You can also use document.cookie manually
         // Function to fetch posts
         const fetchPosts = async () => {
             try {
@@ -19,12 +25,12 @@ const PostsPage = () => {
                     setError('Unauthorized or no posts available');
                 }
             } catch (err) {
-                setError('You dont have access to see posts');
+                setError('You don\'t have access to see posts');
             }
         };
 
         fetchPosts();
-    }, []);
+    }, [navigate]); // Make sure navigate is in the dependency array
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 py-10">

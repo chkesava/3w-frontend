@@ -20,6 +20,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("clicked");
     try {
       const response = await axios.post('/auth/login', { email, password }, {
         withCredentials: true // Make sure credentials (cookies) are sent
@@ -27,7 +28,7 @@ const LoginForm = () => {
       console.log('Login successful:', response.data);
 
       // Set SessionID in cookies (assuming it's sent from the backend)
-      Cookies.set('SessionID', response.data.sessionId, { expires: 1, path: '/' });
+      //Cookies.set('SessionID', response.data.sessionId, { expires: 1, path: '/' });
 
       // Redirect after successful login
       navigate('/home'); // Redirect to the Home page or any page you want
@@ -38,7 +39,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="min-h-screen flex items-center justify-center ">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
