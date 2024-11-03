@@ -7,6 +7,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // New loading state
   const navigate = useNavigate(); // Initialize useNavigate
 
   // Check if SessionID exists in cookies on component mount
@@ -20,6 +21,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true
     console.log("clicked");
     try {
       const response = await axios.post('/auth/login', { email, password }, {
@@ -28,13 +30,15 @@ const LoginForm = () => {
       console.log('Login successful:', response.data);
 
       // Set SessionID in cookies (assuming it's sent from the backend)
-      //Cookies.set('SessionID', response.data.sessionId, { expires: 1, path: '/' });
+      // Cookies.set('SessionID', response.data.sessionId, { expires: 1, path: '/' });
 
       // Redirect after successful login
       navigate('/home'); // Redirect to the Home page or any page you want
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -64,8 +68,22 @@ const LoginForm = () => {
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
-          <button type="submit" className="w-full py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out">
-            Login
+          <button
+            type="submit"
+            className={`w-full py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} // Disable button and add styles
+            disabled={loading} // Disable button when loading
+          >
+            {loading ? ( // Show loading animation
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                Logging in...
+              </span>
+            ) : (
+              'Login'
+            )}
           </button>
 
           <div className="flex justify-center items-center space-x-2 mt-4">
