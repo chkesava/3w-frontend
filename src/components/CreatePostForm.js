@@ -48,7 +48,7 @@ const CreatePostForm = () => {
   };
 
   const validateSocialMediaHandle = (handle) => {
-    const regex = /^https:\/\/(www\.)?(twitter|instagram|facebook|linkedin|x|tiktok)\.com\/[a-zA-Z0-9_]+$/;
+    const regex = /^https:\/\/(www\.)?(twitter|instagram|facebook|linkedin|x|tiktok)\.com\/[a-zA-Z0-9_.-]+$/;
     return regex.test(handle);
   };
 
